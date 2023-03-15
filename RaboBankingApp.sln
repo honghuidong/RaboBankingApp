@@ -3,7 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RaboBankingApp", "RaboBankingApp\RaboBankingApp.csproj", "{B3A0AEBE-39C6-4950-8B21-52C4549144F3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RaboBankingApp", "RaboBankingApp\RaboBankingApp.csproj", "{2EDE13EA-2A4B-44E3-818F-2E386FD12318}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RaboBankingApp.DataSeeder", "RaboBankingApp.DataSeeder\RaboBankingApp.DataSeeder.csproj", "{6E42895C-96A1-4E7D-AE9A-95A76A1144D0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RaboBankingAppServer", "RaboBankingAppServer\RaboBankingAppServer.csproj", "{30D43A8E-C936-4826-8BD8-06014FB4FF3C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,10 +15,18 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{B3A0AEBE-39C6-4950-8B21-52C4549144F3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B3A0AEBE-39C6-4950-8B21-52C4549144F3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B3A0AEBE-39C6-4950-8B21-52C4549144F3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B3A0AEBE-39C6-4950-8B21-52C4549144F3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2EDE13EA-2A4B-44E3-818F-2E386FD12318}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2EDE13EA-2A4B-44E3-818F-2E386FD12318}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2EDE13EA-2A4B-44E3-818F-2E386FD12318}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2EDE13EA-2A4B-44E3-818F-2E386FD12318}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6E42895C-96A1-4E7D-AE9A-95A76A1144D0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6E42895C-96A1-4E7D-AE9A-95A76A1144D0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6E42895C-96A1-4E7D-AE9A-95A76A1144D0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6E42895C-96A1-4E7D-AE9A-95A76A1144D0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{30D43A8E-C936-4826-8BD8-06014FB4FF3C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{30D43A8E-C936-4826-8BD8-06014FB4FF3C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{30D43A8E-C936-4826-8BD8-06014FB4FF3C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{30D43A8E-C936-4826-8BD8-06014FB4FF3C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

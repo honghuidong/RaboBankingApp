@@ -11,14 +11,21 @@ public class Program
     public static void Main()
     {
         var builder = WebApplication.CreateBuilder();
-        builder.Services.AddDbContext<DataContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("RaboBankingDb")));
+        builder.Services.AddDbContext<DataContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("RaboBankingAppDb")));
         var app = builder.Build();
 
         var dataContext = app.Services.GetRequiredService<DataContext>();
-        var dataSeeder = new DataSeeder(dataContext);
-        dataSeeder.SeedCategories();
+        var accountSeeder = new AccountSeeder(dataContext);
+        var transactionSeeder = new TransactionSeeder(dataContext);
+        var categorySeeder = new CategorySeeder(dataContext);
 
+        //var dataSeeder = new SeederService(dataContext);
+        //dataSeeder.SeedAllData();
+
+        accountSeeder.SeedAccounts();
+        transactionSeeder.SeedTransactions(); // accounts need to be created before transactions are seeded
+        categorySeeder.SeedCategories();
+
+        // categorize the transactions
     }
-
-
 }

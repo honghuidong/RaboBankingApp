@@ -16,13 +16,14 @@ public class CategorizerService
         _dataContext = dataContext;
     }
 
-    public IList<Category> CategorizeMultiple(IList<Transaction> transactions)
+    public void CategorizeAll()
     {
-        var categories = transactions.Select(t => Categorize(t)).ToList();
-        return categories;
+        var transactions = _dataContext.Transactions;
+        var categorizesTransactions = transactions.Select(t => Categorize(t)).ToList();
+        _dataContext.SaveChanges();
     }
 
-    public Category Categorize(Transaction transaction)
+    public Transaction Categorize(Transaction transaction)
     {
         bool foundCategory = false;
         string ibanToCheck;
@@ -77,7 +78,7 @@ public class CategorizerService
             transaction.CategoryId = _dataContext.Categories.First(category => category.Name == "Other").Id;
         }
 
-        return new Category();
+        return transaction;
     }
 
     public string[] ConvertStringToArrayOfStrings(string stringList)

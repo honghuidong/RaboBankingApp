@@ -8,32 +8,34 @@ internal class AccountSeeder
     private readonly DataContext _dataContext;
     //yourself
     Account hh = new Account() { Name = "Hong Hui Dong", Iban = "NL68ABNA0431463484", Balance = 10000000 };
+    Account ivan = new Account() { Name = "Ivan", Iban = "NL12ABNA0431463786", Balance = 5000000 };
+
 
     //transportation
-    Account ns = new Account() { Name = "Ns", Iban = "NL67INGB0761606463" };
-    Account shell = new Account() { Name = "Shell", Iban = "NL67INGB0751606463" };
+    Account ns = new Account() { Name = "Ns", Iban = "NL67INGB0761606463", Balance = 10000000 };
+    Account shell = new Account() { Name = "Shell", Iban = "NL67INGB0751606463", Balance = 10000000 };
 
     // food
-    Account ah = new Account() { Name = "AH", Iban = "NL46INGB0702493368" };
-    Account hema = new Account() { Name = "Hema", Iban = "NL67INGB0651607663" };
-    Account jumbo = new Account() { Name = "Jumbo", Iban = "NL67INGB0651607664" };
+    Account ah = new Account() { Name = "AH", Iban = "NL46INGB0702493368", Balance = 10000000 };
+    Account hema = new Account() { Name = "Hema", Iban = "NL67INGB0651607663", Balance = 10000000 };
+    Account jumbo = new Account() { Name = "Jumbo", Iban = "NL67INGB0651607664", Balance = 10000000 };
 
     // health/sport
-    Account pilates = new Account() { Name = "PLTS", Iban = "NL46INGB0704493768" };
-    Account tennis = new Account() { Name = "ZTV", Iban = "NL46INGB07044963368" };
+    Account pilates = new Account() { Name = "PLTS", Iban = "NL46INGB0704493768", Balance = 10000000 };
+    Account tennis = new Account() { Name = "ZTV", Iban = "NL46INGB07044963368", Balance = 10000000 };
 
 
     // housing
-    Account mortgage = new Account() { Name = "RabobankMortgage", Iban = "NL67RABOB0641607464" };
-    Account utilities = new Account() { Name = "Nuon", Iban = "NL67RABOB064162464" };
+    Account mortgage = new Account() { Name = "RabobankMortgage", Iban = "NL67RABOB0641607464", Balance = 10000000 };
+    Account utilities = new Account() { Name = "Nuon", Iban = "NL67RABOB064162464", Balance = 10000000 };
 
 
     // shopping
-    Account farfetch = new Account() { Name = "Farfetch", Iban = "NL67INGB0651607464" };
-    Account cos = new Account() { Name = "Cos", Iban = "NL67INGB0651607464" };
+    Account farfetch = new Account() { Name = "Farfetch", Iban = "NL67INGB0651607464", Balance = 10000000 };
+    Account cos = new Account() { Name = "Cos", Iban = "NL67INGB0651607464", Balance = 10000000 };
 
     //income
-    Account rabobank = new Account() { Name = "RabobankSalary", Iban = "NL67RABOB0651607464" };
+    Account rabobank = new Account() { Name = "RabobankSalary", Iban = "NL67RABOB0651607464", Balance = 1000000000 };
 
 
     public AccountSeeder(DataContext dataContext)
@@ -41,30 +43,30 @@ internal class AccountSeeder
         _dataContext = dataContext;
     }
 
-    public List<Account> CreateAccounts()
-    {
-        var dbAccounts = new List<Account>();
-        var accounts = new List<Account>()
-            {
-                hh,
-                ns, shell,
-                ah, hema, jumbo,
-                pilates, tennis,
-                mortgage, utilities,
-                farfetch, cos,
-                rabobank
+    //public List<Account> CreateAccounts()
+    //{
+    //    var dbAccounts = new List<Account>();
+    //    var accounts = new List<Account>()
+    //        {
+    //            hh,
+    //            ns, shell,
+    //            ah, hema, jumbo,
+    //            pilates, tennis,
+    //            mortgage, utilities,
+    //            farfetch, cos,
+    //            rabobank
 
-            };
+    //        };
 
-        accounts.ForEach(f =>
-        {
-            _dataContext.Add(f);
-            _dataContext.SaveChanges();
-            dbAccounts.Add(f);
-        });
+    //    accounts.ForEach(f =>
+    //    {
+    //        _dataContext.Add(f);
+    //        _dataContext.SaveChanges();
+    //        dbAccounts.Add(f);
+    //    });
 
-        return dbAccounts;
-    }
+    //    return dbAccounts;
+    //}
 
     public void SeedAccounts()
     {
@@ -75,6 +77,7 @@ internal class AccountSeeder
         {
             var accounts = new List<Account>()
             {
+                hh, ivan,
                 ns, shell,
                 ah, hema, jumbo,
                 pilates, tennis,
@@ -82,8 +85,8 @@ internal class AccountSeeder
                 farfetch, cos,
                 rabobank
             };
-        _dataContext.Accounts.AddRange(accounts);
-        _dataContext.SaveChanges();
+            _dataContext.Accounts.AddRange(accounts);
+            _dataContext.SaveChanges();
         }
         
     }

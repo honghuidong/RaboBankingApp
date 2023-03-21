@@ -15,7 +15,9 @@ public class Transaction
     //public string FromAccountIban { get; set; }
     public DateTime Date { get; set; } = DateTime.Now;
     public string? Description { get; set; }
+    [Column(TypeName = "decimal(15,2)")]
     public double Amount { get; set; }
+    [Column(TypeName = "decimal(15,2)")]
     public double BalanceAfterBooking { get; set; }
     public int CategoryId { get; set; }
     public double CarbonFootPrint { get; set; }
@@ -27,5 +29,11 @@ public class Transaction
 
     [ForeignKey(nameof(ToAccountId))]
     public virtual Account ToAccount { get; set; }
+        //get { return this.HongHui;  }
+        //set { this.HongHui = value; } }
+
     public int? ToAccountId { get; set; }
+
+    private Account HongHui = new Account() { Name = "Hong Hui Dong", Iban = "NL68ABNA0431463484", Balance = 10000000 };
 }
+

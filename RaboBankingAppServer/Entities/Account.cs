@@ -11,7 +11,8 @@ namespace RaboBankingAppServer.Entities
         public int Id { get; set; }
         public string Name { get; set; }
         public string Iban { get; set; }
-        public double? Balance { get; set; } = 1000000;
+        [Column(TypeName = "decimal(15,2)")]
+        public double Balance { get; set; }
 
         //[ForeignKey(nameof(TransactionTypeId))]
         //public virtual AccountType AccountType { get; set; }

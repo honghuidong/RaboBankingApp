@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RaboBankingAppServer;
 
@@ -11,9 +12,11 @@ using RaboBankingAppServer;
 namespace RaboBankingAppServer.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20230320120204_AddDecimalOnAmount")]
+    partial class AddDecimalOnAmount
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -30,8 +33,8 @@ namespace RaboBankingAppServer.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<decimal>("Balance")
-                        .HasColumnType("decimal(15,2)");
+                    b.Property<double?>("Balance")
+                        .HasColumnType("float");
 
                     b.Property<int?>("CategoryId")
                         .HasColumnType("int");
@@ -81,8 +84,8 @@ namespace RaboBankingAppServer.Migrations
                     b.Property<decimal>("Amount")
                         .HasColumnType("decimal(15,2)");
 
-                    b.Property<decimal>("BalanceAfterBooking")
-                        .HasColumnType("decimal(15,2)");
+                    b.Property<double>("BalanceAfterBooking")
+                        .HasColumnType("float");
 
                     b.Property<double>("CarbonFootPrint")
                         .HasColumnType("float");

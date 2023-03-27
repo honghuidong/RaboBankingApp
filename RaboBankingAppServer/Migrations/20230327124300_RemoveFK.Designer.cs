@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RaboBankingAppServer;
 
@@ -11,9 +12,11 @@ using RaboBankingAppServer;
 namespace RaboBankingAppServer.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20230327124300_RemoveFK")]
+    partial class RemoveFK
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -33,7 +36,7 @@ namespace RaboBankingAppServer.Migrations
                     b.Property<decimal>("Balance")
                         .HasColumnType("decimal(15,2)");
 
-                    b.Property<int>("CategoryId")
+                    b.Property<int?>("CategoryId")
                         .HasColumnType("int");
 
                     b.Property<string>("Iban")
@@ -118,13 +121,9 @@ namespace RaboBankingAppServer.Migrations
 
             modelBuilder.Entity("RaboBankingAppServer.Entities.Account", b =>
                 {
-                    b.HasOne("RaboBankingAppServer.Entities.Category", "Category")
+                    b.HasOne("RaboBankingAppServer.Entities.Category", null)
                         .WithMany("Accounts")
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Category");
+                        .HasForeignKey("CategoryId");
                 });
 
             modelBuilder.Entity("RaboBankingAppServer.Entities.Transaction", b =>

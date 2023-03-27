@@ -1,0 +1,201 @@
+﻿@page "/transactions/list/{currentPage:int?}"
+@using Microsoft.EntityFrameworkCore;
+@using RaboBankingAppServer.Entities;
+@inject IDbContextFactory<DataContext> ContextFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Transactions</PageTitle>
+
+<h1>Transactions</h1>
+
+@if (Transactions is null)
+{
+    <div>Loading...</div>
+}
+else
+{
+    <ul class="pagination mt-3">
+        <li class="page-item @(CurrentPage == 1 ? "disabled" : "")">
+            <a class="page-link" href="/transactions/list/@(CurrentPage - 1)">Previous</a>
+        </li>
+        @for (int i = 1; i <= TotalPages; i++)
+        {
+            <li class="page-item @(CurrentPage == i ? "active" : "")">
+                <a class="page-link" href="/transactions/list/@i">@i</a>
+            </li>
+        }
+        <li class="page-item @(CurrentPage == TotalPages ? "disabled" : "")">
+            <a class="page-link" href="/transactions/list/@(CurrentPage + 1)">Next</a>
+        </li>
+    </ul>
+
+
+
+    <div class="accordion" id="accordionExample">
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingOne">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <tr data-toggle="collapse" data-target="#accordion" class="clickable">
+                                <td>Some Stuff</td>
+                                <td>Some more stuff</td>
+                                <td>And some more</td>
+                            </tr>
+                            <tr>
+                                <td colspan="3">
+                                    <div id="accordion" class="collapse">Hidden by default</div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                
+                
+                </button>
+            </h2>
+            <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                <div class="accordion-body">
+                    <strong>This is the first item's accordion body.</strong> It is shown by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingThree">
+                @foreach (var transaction in Transactions)
+                {
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+
+                        <tr data-toggle="collapse" data-target="#accordion" class="clickable">
+                            @if (transaction.IncomingTransaction == true)
+                            {
+                                <td>@transaction.FromAccount.Name</td>
+                            }
+                            else
+                            {
+                                <td>@transaction.ToAccount.Name</td>
+                            }
+                            <td>@transaction.Amount</td>
+                            <td>@DateOnly.FromDateTime(transaction.Date)</td>
+                        </tr>
+                    
+                </button>
+                }
+            </h2>
+            <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
+                <div class="accordion-body">
+                    <strong>This is the third item's accordion body.</strong> It is hidden by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Account</th>
+                <th>Amount</th>
+                <th>Date</th>
+                <th>More information</th>
+
+@*               <th>Category</th>
+                <th>Carbon Foot Print</th>*@
+            </tr>
+        </thead>
+        <tbody>
+
+
+            @foreach (var transaction in Transactions)
+            {
+                <tr>
+                    @if (transaction.IncomingTransaction == true)
+                    {
+                        <td>@transaction.FromAccount.Name</td>
+                    }
+                    else 
+                    {
+                        <td>@transaction.ToAccount.Name</td>
+                    }
+                    <td>@transaction.Amount</td>
+                    <td>@DateOnly.FromDateTime(transaction.Date)</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <ul class="pagination mt-3">
+        <li class="page-item @(CurrentPage == 1 ? "disabled" : "")">
+            <a class="page-link" href="/transactions/list/@(CurrentPage - 1)">Previous</a>
+        </li>
+        @for (int i = 1; i <= TotalPages; i++)
+        {
+            <li class="page-item @(CurrentPage == i ? "active" : "")">
+                <a class="page-link" href="/transactions/list/@i">@i</a>
+            </li>
+        }
+        <li class="page-item @(CurrentPage == TotalPages ? "disabled" : "")">
+            <a class="page-link" href="/transactions/list/@(CurrentPage + 1)">Next</a>
+        </li>
+    </ul>
+
+
+}
+
+@code {
+    [Parameter]
+    public int? CurrentPage { get; set; }
+    private List<Transaction>? Transactions { get; set; }
+    private int TotalPages { get; set; }
+    private const int ItemsPerPage = 4;
+    protected override async Task OnParametersSetAsync()
+    {
+        await LoadData();
+    }
+
+    private async Task LoadData()
+    {
+        if (CurrentPage is null or < 1)
+        {
+            NavigationManager.NavigateTo("/transactions/list/1");
+            return;
+        }
+
+        using var context = ContextFactory.CreateDbContext();
+
+        var transactionsCount = await context.Transactions.CountAsync();
+        TotalPages = transactionsCount == 0 ? 1 : (int)Math.Ceiling((double)transactionsCount / ItemsPerPage);
+
+        if (CurrentPage > TotalPages)
+        {
+            NavigationManager.NavigateTo($"/transactions/list/{TotalPages}");
+            return;
+        }
+
+        var itemsToSkip = (CurrentPage.Value - 1) * ItemsPerPage;
+
+        Transactions = await context.Transactions
+            .Include(t => t.FromAccount)
+            .Include(t => t.ToAccount)
+            .OrderBy(t => t.Date)
+            .Skip(itemsToSkip)
+            .Take(ItemsPerPage)
+            .ToListAsync();
+    }
+
+    private async Task HandleDelete(Transaction transaction)
+    {
+        using var context = ContextFactory.CreateDbContext();
+        context.Transactions.Remove(transaction);
+        await context.SaveChangesAsync();
+
+        await LoadData();
+
+    }
+}

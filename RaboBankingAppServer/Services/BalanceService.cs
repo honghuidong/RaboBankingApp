@@ -24,6 +24,5 @@ public class BalanceService
             transaction.ToAccount.Balance = transaction.ToAccount.Balance + transaction.Amount;
         }
         _dataContext.SaveChanges();
-
     }
 }

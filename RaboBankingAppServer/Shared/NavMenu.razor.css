@@ -3,12 +3,19 @@
 }
 
 .top-row {
-    height: 3.5rem;
+    height: 140px;
     background-color: rgba(0,0,0,0.4);
+}
+
+.logo {
+    height: 80px;
+    display: block;
+    margin: auto;
 }
 
 .navbar-brand {
     font-size: 1.1rem;
+    font-weight: bold;
 }
 
 .oi {
@@ -40,15 +47,15 @@
         line-height: 3rem;
     }
 
-.nav-item ::deep a.active {
-    background-color: rgba(255,255,255,0.25);
-    color: white;
-}
+        .nav-item ::deep a.active {
+            background-color: rgba(255,255,255,0.25);
+            color: white;
+        }
 
-.nav-item ::deep a:hover {
-    background-color: rgba(255,255,255,0.1);
-    color: white;
-}
+        .nav-item ::deep a:hover {
+            background-color: rgba(255,255,255,0.1);
+            color: white;
+        }
 
 @media (min-width: 641px) {
     .navbar-toggler {

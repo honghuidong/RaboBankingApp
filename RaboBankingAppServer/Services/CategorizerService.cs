@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
 using RaboBankingAppServer.Entities;
 using Transaction = RaboBankingAppServer.Entities.Transaction;
 
@@ -19,7 +20,13 @@ public class CategorizerService
     public void CategorizeAll()
     {
         var transactions = _dataContext.Transactions;
-        var categorizesTransactions = transactions.Select(t => Categorize(t)).ToList();
+        //var categorizesTransactions = transactions.Select(t => Categorize(t)).ToList();
+        var categorizesTransactions = transactions.Include(t => t.FromAccount)
+            .Include(t => t.ToAccount).ToList();
+        foreach (var transaction in categorizesTransactions)
+        {
+            Categorize(transaction);
+        }
         _dataContext.SaveChanges();
     }
 
@@ -37,7 +44,7 @@ public class CategorizerService
         }
 
         // Loop through each accountnumber for all categories to see if the transaction matches
-        foreach (var category in _dataContext.Categories)
+        foreach (var category in _dataContext.Categories.Include(c=>c.Accounts))
         {
             //Check if either the incoming or outgoing account number matches one of the account numbers for this category
             if (Array.IndexOf(category.Accounts.Select(x => x.Iban).ToArray(), ibanToCheck) >= 0)
@@ -58,17 +65,21 @@ public class CategorizerService
         {
             foreach (var category in _dataContext.Categories)
             {
-                //Check whether the description match the keywords for this category
-                string[] keywords = ConvertStringToArrayOfStrings(category.Keywords);
-                foreach (var keyword in keywords)
+                if(category.Keywords != null)
                 {
-                    if (ConvertStringToArrayOfStrings(transaction.Description.ToLower()).Contains(keyword.ToLower()))
+                    //Check whether the description match the keywords for this category
+                    string[] keywords = ConvertStringToArrayOfStrings(category.Keywords);
+                    foreach (var keyword in keywords)
                     {
-                        transaction.CategoryId = category.Id;
-                        foundCategory = true;
-                        break;
+                        if (ConvertStringToArrayOfStrings(transaction.Description.ToLower()).Contains(keyword.ToLower()))
+                        {
+                            transaction.CategoryId = category.Id;
+                            foundCategory = true;
+                            break;
+                        }
                     }
                 }
+                
             }
         }
 

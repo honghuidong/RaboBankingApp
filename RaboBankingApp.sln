@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RaboBankingApp", "RaboBanki
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RaboBankingApp.DataSeeder", "RaboBankingApp.DataSeeder\RaboBankingApp.DataSeeder.csproj", "{6E42895C-96A1-4E7D-AE9A-95A76A1144D0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RaboBankingAppServer", "RaboBankingAppServer\RaboBankingAppServer.csproj", "{30D43A8E-C936-4826-8BD8-06014FB4FF3C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RaboBankingAppServer", "RaboBankingAppServer\RaboBankingAppServer.csproj", "{30D43A8E-C936-4826-8BD8-06014FB4FF3C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

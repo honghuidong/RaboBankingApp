@@ -1,0 +1,128 @@
+﻿@page "/transactions/add"
+@using Microsoft.EntityFrameworkCore;
+@using RaboBankingAppServer.Entities;
+@using RaboBankingAppServer.Services;
+@inject IDbContextFactory<DataContext> ContextFactory
+
+<PageTitle>New Transaction</PageTitle>
+
+<h1>New Transaction</h1>
+
+@if (Categories is null || Accounts is null)
+{
+    <div>Loading...</div>
+}
+else
+{
+    <EditForm Model="@Transaction" OnSubmit="@HandleValidSubmit" >
+        <div class="mb-3">
+            <label for="amount" class="form-label">Amount</label>
+            <InputNumber id="amount" class="form-control" placeholder="Amount" @bind-Value="Transaction.Amount" />
+        </div>
+        <div class="mb-3">
+            <label for="account" class="form-label">Account</label
+            <InputSelect class="form-select" @bind-Value="Transaction.ToAccountId">
+                <option selected>Select Account</option>
+                @foreach (var account in Accounts)
+                {
+                    <option value="@account.Id">@account.Name</option>
+                }
+            </InputSelect>  
+        </div>
+        <div class="mb-3">
+            <label for="category" class="form-label">Category</label>
+            <InputSelect class="form-select" @bind-Value="Transaction.CategoryId"> 
+                <option selected value="0">Select Category</option>
+                @foreach (var category in Categories)
+                {
+                    <option value="@category.Id">@category.Name</option>
+                }
+            </InputSelect>
+        </div>
+        <div class="mb-3">
+            <label for="description" class="form-label">Description</label>
+            <InputText id="description" class="form-control" placeholder="Description" @bind-Value="Transaction.Description" />
+        </div>
+        <button type="submit" class="btn btn-primary" disabled="@IsBusy" >Submit</button>
+    </EditForm>
+}
+
+@code {
+    private Transaction? Transaction { get; set; }
+
+    private IList<Account> Accounts { get; set; }
+
+    private IList<Category> Categories { get; set; }
+
+    private EventCallback<bool> OnSubmit { get; set; }
+
+    public bool IsBusy { get; set; }
+
+    private string? SuccessMessage { get; set; }
+    private string? ErrorMessage { get; set; }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await LoadData();
+    }
+
+    private async Task LoadData()
+    {
+        using var context = ContextFactory.CreateDbContext();
+
+        Categories = await context.Categories
+            .OrderBy(t => t.Id)
+            .ToListAsync();
+
+        Accounts = await context.Accounts
+            .OrderBy(t => t.Id)
+            .ToListAsync();
+
+        Transaction = new()
+        {
+            FromAccountId = 1,
+            Date = DateTime.Now,
+            IncomingTransaction = false
+        };
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        try
+        {
+            if (Transaction is not null)
+            {
+                using var context = ContextFactory.CreateDbContext();
+                var toAccount = Accounts.FirstOrDefault(a => a.Id == Transaction.ToAccountId);
+                var fromAccount = Accounts.FirstOrDefault(a => a.Id == Transaction.FromAccountId);
+
+                //only booking money out
+                Transaction.Amount = -Transaction.Amount;
+                Transaction.BalanceAfterBooking = fromAccount.Balance + Transaction.Amount;
+                fromAccount.Balance = fromAccount.Balance + Transaction.Amount;
+                toAccount.Balance = toAccount.Balance - Transaction.Amount;
+
+                context.Transactions.Add(Transaction);
+                await context.SaveChangesAsync();
+
+                var accountName = Accounts.FirstOrDefault(a => a.Id == Transaction.ToAccountId).Name;
+                SuccessMessage = $"Transaction {Transaction.Amount} was made successfully to {accountName}.";
+                ErrorMessage = null;
+
+                // New Trannsaction for next creation
+                Transaction = new()
+                {
+                    FromAccountId = 1,
+                    Date = DateTime.Now,
+                    IncomingTransaction = false
+                };
+            }
+        }
+        catch (Exception ex)
+        {
+            SuccessMessage = null;
+            ErrorMessage = $"Error while adding transaction: {ex.Message}";
+        }
+    }
+
+}

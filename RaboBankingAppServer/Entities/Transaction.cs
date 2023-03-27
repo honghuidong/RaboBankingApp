@@ -23,17 +23,13 @@ public class Transaction
     public double CarbonFootPrint { get; set; }
     public bool IncomingTransaction { get; set; }
 
-    [ForeignKey(nameof(FromAccountId))]
-    public virtual Account FromAccount { get; set; }
+    public Account FromAccount { get; set; }
+    [Required]
     public int? FromAccountId { get; set; }
-
-    [ForeignKey(nameof(ToAccountId))]
     public virtual Account ToAccount { get; set; }
-        //get { return this.HongHui;  }
-        //set { this.HongHui = value; } }
-
+    [Required]
     public int? ToAccountId { get; set; }
 
-    private Account HongHui = new Account() { Name = "Hong Hui Dong", Iban = "NL68ABNA0431463484", Balance = 10000000 };
+    //private Account HongHui = new Account() { Name = "Hong Hui Dong", Iban = "NL68ABNA0431463484", Balance = 10000000 };
 }
 

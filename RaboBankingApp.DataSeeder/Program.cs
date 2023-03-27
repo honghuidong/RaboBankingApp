@@ -13,19 +13,17 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder();
         builder.Services.AddDbContext<DataContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("RaboBankingAppDb")));
-        //builder.Services.AddScoped<CategorizerService>();
 
         var app = builder.Build();
 
         var dataContext = app.Services.GetRequiredService<DataContext>();
-        //var categorizerService = app.Services.GetRequiredService<CategorizerService>();
 
         var dataSeeder = new SeederService(dataContext);
-        //dataSeeder.SeedAllData();
+        dataSeeder.SeedAllData();
 
         var transactionSeeder = new TransactionSeeder(dataContext);
 
-        //transactionSeeder.UpdateBalance();
+        transactionSeeder.UpdateBalance();
         transactionSeeder.UpdateCategory();
 
 

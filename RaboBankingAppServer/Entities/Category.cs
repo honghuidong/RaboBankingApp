@@ -13,6 +13,7 @@ namespace RaboBankingAppServer.Entities
         public int Id { get; set; }
         public string? Name { get; set; }
         public string? Keywords { get; set; }
+        public double? CarbonMultiplier { get; set; }
 
         public List<Account> Accounts { get; set; }
 

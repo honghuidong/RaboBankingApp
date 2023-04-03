@@ -1,0 +1,123 @@
+﻿@page "/transactions/list/2023"
+@using Microsoft.EntityFrameworkCore;
+@using RaboBankingAppServer.Entities;
+@inject IDbContextFactory<DataContext> ContextFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Transactions</PageTitle>
+
+<h1>Transactions 2023</h1>
+
+@if (Transactions is null)
+{
+    <div>Loading...</div>
+}
+else
+{
+
+    <div class="accordion" id="accordionExample">
+        @for (int j = 1; j <= 12; j++)
+        {
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingOne">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#row@(j)-collapse" aria-expanded="false" aria-controls="row@(j)-collapse">
+                        @Months?[j-1]
+                    </button>
+                </h2>
+                <div id="row@(j)-collapse" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                    <div class="accordion-body">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Account</th>
+                                    <th>Amount</th>
+                                    <th>Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @{
+                                    GetTransactionsPerMonth(j);
+                                }
+                                @for (int i = 0; i < TransactionsPerMonth?.Count(); i++)
+                                {
+                                    var categoryname = Categories?.First(c => c.Id == TransactionsPerMonth[i].CategoryId).Name;
+                                    <tr data-bs-toggle="collapse" data-bs-target="#row@(i)-collapse@(j)" aria-expanded="false" aria-controls="row@(i)-collapse@(j)">
+                                        @if (TransactionsPerMonth[i].IncomingTransaction == true)
+                                        {
+                                            <td>@TransactionsPerMonth[i].FromAccount.Name</td>
+                                        }
+                                        else
+                                        {
+                                            <td>@TransactionsPerMonth[i].ToAccount.Name</td>
+                                        }
+                                        <td>@TransactionsPerMonth[i].Amount</td>
+                                        <td>@DateOnly.FromDateTime(TransactionsPerMonth[i].Date)</td>
+                                    </tr>
+
+                                    <tr id="row@(i)-collapse@(j)" class="collapse">
+                                        <td colspan="3">
+                                            <div>
+                                                <ul>
+                                                    <li><a>Description: @TransactionsPerMonth[i].Description  </a></li>
+                                                    <li><a>Account amount: @TransactionsPerMonth[i].BalanceAfterBooking </a></li>
+                                                    <li><a>Category: @categoryname </a></li>
+                                                    <li><a>Carbon Footprint: @TransactionsPerMonth[i].CarbonFootPrint </a></li>
+                                                </ul>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+
+@code {
+    private List<Transaction>? Transactions { get; set; }
+    private List<Category>? Categories { get; set; }
+    private List<Transaction>? TransactionsPerMonth { get; set; }
+    private List<String>? Months { get; set; }
+    //[Parameter]
+    //public int targetYear { get; set; }
+    protected override async Task OnParametersSetAsync()
+    {
+        await LoadData();
+    }
+
+    private async Task LoadData()
+    {
+        using var context = ContextFactory.CreateDbContext();
+        int targetYear = 2023;
+        Transactions = await context.Transactions
+            .Include(t => t.FromAccount)
+            .Include(t => t.ToAccount)
+            .Where(t => t.Date.Year == targetYear)
+            .OrderByDescending(t => t.Date)
+            .ToListAsync();
+
+        Categories = await context.Categories
+            .OrderBy(t => t.Id)
+            .ToListAsync();
+
+        Months = new() { "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" };
+    }
+
+    private void GetTransactionsPerMonth(int month)
+    {
+        TransactionsPerMonth = Transactions?.Where(t => t.Date.Month == month).ToList();
+    }
+
+    private async Task HandleDelete(Transaction transaction)
+    {
+        using var context = ContextFactory.CreateDbContext();
+        context.Transactions.Remove(transaction);
+        await context.SaveChangesAsync();
+
+        await LoadData();
+
+    }
+}

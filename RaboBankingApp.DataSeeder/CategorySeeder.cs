@@ -21,11 +21,11 @@ internal class CategorySeeder
         //    // seeding logic here...
         //}
 
-        var transportation = new Category() { Name = "Transportation", Keywords = "Shell, BP, NS, train, Gasoline" };
-        var food = new Category() { Name = "Food", Keywords = "AH, Jumbo, Hema" };
-        var sport = new Category() { Name = "Sport", Keywords = "Tennis, Pilates" };
-        var housing = new Category() { Name = "Housing", Keywords = "Mortgage, Utilities, Nuon, gas, water" };
-        var shopping = new Category() { Name = "Shopping", Keywords = "Cos, Farfetch, garments, shopping" };
+        var transportation = new Category() { Name = "Transportation", Keywords = "Shell, BP, NS, train, Gasoline", CarbonMultiplier = 350 };
+        var food = new Category() { Name = "Food", Keywords = "AH, Jumbo, Hema", CarbonMultiplier = 802 };
+        var sport = new Category() { Name = "Sport", Keywords = "Tennis, Pilates", CarbonMultiplier = 6 };
+        var housing = new Category() { Name = "Housing", Keywords = "Mortgage, Utilities, Nuon, gas, water", CarbonMultiplier = 300 };
+        var shopping = new Category() { Name = "Shopping", Keywords = "Cos, Farfetch, garments, shopping", CarbonMultiplier = 700 };
         //var saving = new Category() { Name = "Saving"};
         var income = new Category() { Name = "Income", Keywords = "Rabobank" };
         var other = new Category() { Name = "Other" };

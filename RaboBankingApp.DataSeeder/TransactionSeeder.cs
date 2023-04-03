@@ -66,14 +66,13 @@ namespace RaboBankingApp.DataSeeder
         }
         public List<Transaction> CreateTransactionsPerAccount(string description, string accountName, int factor, bool constantPayment, DateTime startDate)
         {
-            int totalMonths = 1;
+            int totalMonths = 24;
             var transactions = new List<Transaction>();
-            int monthCounter = 1;
-            int addDays = 0;
             var date = startDate;
 
             Account fromAccount = _dataContext.Accounts.Where(t => t.Name == accountName).First();
             Account toAccount = _dataContext.Accounts.Where(t => t.Name == "Hong Hui Dong").First();
+            List<Category> categories = _dataContext.Categories.ToList();
             // create 24*transactionsPerMonth worth of transactions
             for (int i = 0; i < totalMonths; i++)
             {
@@ -85,8 +84,9 @@ namespace RaboBankingApp.DataSeeder
                     FromAccountId = fromAccount.Id,
                     ToAccount = toAccount,
                     ToAccountId = toAccount.Id,
-                    Amount = constantPayment == true ? factor : factor, // ((new Random().NextDouble() + 1) * factor),
+                    Amount = constantPayment == true ? factor : ((new Random().NextDouble() + 1) * factor),
                     Date = date.AddMonths(i),
+
                 };
                 //transaction.BalanceAfterBooking = toAccount.Balance + transaction.Amount;
                 
@@ -115,6 +115,18 @@ namespace RaboBankingApp.DataSeeder
             categorizerService.CategorizeAll();
         }
 
+        internal void UpdateCarbonFootprint()
+        {
+            List<Category> categories = _dataContext.Categories.ToList();
+
+            foreach (var transaction in  _dataContext.Transactions)
+            {
+                var carbonMultiplier = categories.FirstOrDefault(c => c.Id == transaction.CategoryId).CarbonMultiplier;
+                transaction.CarbonFootPrint = (double)((-1) * transaction.Amount * carbonMultiplier.GetValueOrDefault());
+            }
+            _dataContext.SaveChanges();
+
+        }
 
 
 

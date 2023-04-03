@@ -25,7 +25,7 @@ public class Program
 
         transactionSeeder.UpdateBalance();
         transactionSeeder.UpdateCategory();
-
+        transactionSeeder.UpdateCarbonFootprint();
 
 
 

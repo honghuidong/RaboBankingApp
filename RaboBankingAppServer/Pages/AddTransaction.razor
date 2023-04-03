@@ -43,7 +43,30 @@ else
             <label for="description" class="form-label">Description</label>
             <InputText id="description" class="form-control" placeholder="Description" @bind-Value="Transaction.Description" />
         </div>
-        <button type="submit" class="btn btn-primary" disabled="@IsBusy" >Submit</button>
+        <button type="submit" class="btn btn-primary" onclick="@ShowPopupMessage" >Submit</button>
+
+        @if (showPopupMessage)
+        {
+            <div class="modal fade show" tabindex="-1" role="dialog" style="display: block;">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Transaction successfull</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close" @onclick="ClosePopupMessage">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            Your transaction has been executed successfully! Go to your transaction overview to see the latest transactions.
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal" @onclick="ClosePopupMessage">Close</button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        }
     </EditForm>
 }
 
@@ -61,9 +84,21 @@ else
     private string? SuccessMessage { get; set; }
     private string? ErrorMessage { get; set; }
 
+    private bool showPopupMessage = false;
+
     protected override async Task OnParametersSetAsync()
     {
         await LoadData();
+    }
+
+    private void ShowPopupMessage(MouseEventArgs e)
+    {
+        showPopupMessage = true;
+    }
+
+    private void ClosePopupMessage()
+    {
+        showPopupMessage = false;
     }
 
     private async Task LoadData()
@@ -98,6 +133,7 @@ else
 
                 //only booking money out
                 Transaction.Amount = -Transaction.Amount;
+
                 Transaction.BalanceAfterBooking = fromAccount.Balance + Transaction.Amount;
                 fromAccount.Balance = fromAccount.Balance + Transaction.Amount;
                 toAccount.Balance = toAccount.Balance - Transaction.Amount;

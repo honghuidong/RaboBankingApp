@@ -20,6 +20,7 @@ public class Transaction
     [Column(TypeName = "decimal(15,2)")]
     public double BalanceAfterBooking { get; set; }
     public int CategoryId { get; set; }
+    [Column(TypeName = "decimal(15,2)")]
     public double CarbonFootPrint { get; set; }
     public bool IncomingTransaction { get; set; }
 

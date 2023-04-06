@@ -1,4 +1,4 @@
-﻿@page "/transactions/list/2023"
+﻿@page "/transactions/list/month/{targetYear:int}"
 @using Microsoft.EntityFrameworkCore;
 @using RaboBankingAppServer.Entities;
 @inject IDbContextFactory<DataContext> ContextFactory
@@ -6,7 +6,7 @@
 
 <PageTitle>Transactions</PageTitle>
 
-<h1>Transactions 2023</h1>
+<h1>Transactions @targetYear </h1>
 
 @if (Transactions is null)
 {
@@ -16,7 +16,7 @@ else
 {
 
     <div class="accordion" id="accordionExample">
-        @for (int j = 1; j <= 12; j++)
+        @for (int j = 1; j <= Months?.Count(); j++)
         {
             <div class="accordion-item">
                 <h2 class="accordion-header" id="headingOne">
@@ -36,6 +36,7 @@ else
                             </thead>
                             <tbody>
                                 @{
+
                                     GetTransactionsPerMonth(j);
                                 }
                                 @for (int i = 0; i < TransactionsPerMonth?.Count(); i++)
@@ -80,9 +81,10 @@ else
     private List<Transaction>? Transactions { get; set; }
     private List<Category>? Categories { get; set; }
     private List<Transaction>? TransactionsPerMonth { get; set; }
+    private List<String>? AllMonths { get; set; }
     private List<String>? Months { get; set; }
-    //[Parameter]
-    //public int targetYear { get; set; }
+    [Parameter]
+    public int targetYear { get; set; }
     protected override async Task OnParametersSetAsync()
     {
         await LoadData();
@@ -91,7 +93,7 @@ else
     private async Task LoadData()
     {
         using var context = ContextFactory.CreateDbContext();
-        int targetYear = 2023;
+        //int targetYear = 2023;
         Transactions = await context.Transactions
             .Include(t => t.FromAccount)
             .Include(t => t.ToAccount)
@@ -99,11 +101,20 @@ else
             .OrderByDescending(t => t.Date)
             .ToListAsync();
 
+        AllMonths = new() { "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" };
+        Months = new() { };
+        for (int i = 1; i <= AllMonths.Count(); i++)
+        {
+            if (Transactions?.FirstOrDefault(t => t.Date.Month == i)?.Date.Month == i)
+            {
+                Months.Add(AllMonths[i - 1]);
+            }
+        }
+
         Categories = await context.Categories
             .OrderBy(t => t.Id)
             .ToListAsync();
 
-        Months = new() { "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" };
     }
 
     private void GetTransactionsPerMonth(int month)

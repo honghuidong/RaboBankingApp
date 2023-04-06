@@ -138,6 +138,10 @@ else
                 fromAccount.Balance = fromAccount.Balance + Transaction.Amount;
                 toAccount.Balance = toAccount.Balance - Transaction.Amount;
 
+                var carbonMultiplier = Categories.First(c => c.Id == Transaction.CategoryId).CarbonMultiplier;
+                var carbonFootPrint = (double) (-1)*(Transaction.Amount * carbonMultiplier.GetValueOrDefault());
+                Transaction.CarbonFootPrint = Math.Round(carbonFootPrint, 2);
+
                 context.Transactions.Add(Transaction);
                 await context.SaveChangesAsync();
 

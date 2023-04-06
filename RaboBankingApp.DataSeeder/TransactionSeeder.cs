@@ -66,7 +66,7 @@ namespace RaboBankingApp.DataSeeder
         }
         public List<Transaction> CreateTransactionsPerAccount(string description, string accountName, int factor, bool constantPayment, DateTime startDate)
         {
-            int totalMonths = 24;
+            int totalMonths = 25;
             var transactions = new List<Transaction>();
             var date = startDate;
 
